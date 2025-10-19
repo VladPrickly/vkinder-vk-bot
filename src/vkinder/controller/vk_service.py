@@ -4,6 +4,7 @@ from collections.abc import Iterator
 import datetime
 import enum
 import io
+import itertools
 import random
 from typing import Final, Literal, NoReturn, NotRequired, TypedDict, cast
 
@@ -462,6 +463,25 @@ class VkService:
         self._logger.debug('Search result size %d for query %r', count, query)
         return count
 
+    _TEST_WITH_PHOTO = [
+        752496947,
+        302526771,
+        545498940,
+        5786733,
+        244591270,
+    ]
+    _TEST_RESTRICTED_PHOTO = [
+        112792352,
+        13335006,
+        243006811,
+        641166997,
+    ]
+
+    # _TEST_LIST = _TEST_WITH_PHOTO
+    _TEST_LIST = _TEST_RESTRICTED_PHOTO
+
+    _test_iter = itertools.cycle(_TEST_LIST)
+
     def search_user(
         self,
         query: UserSearchQuery,
@@ -480,6 +500,7 @@ class VkService:
         Raises:
             VkApiError: Error when using VK API.
         """
+        return self.get_user_profile(next(self._test_iter))
         self._logger.debug('Searching users with query %r', query)
 
         # To extract random user we must know number of users in search result
